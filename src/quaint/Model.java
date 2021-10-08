@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class Model {
 
-    List<List<face_attr>> faces;
+    List<List<FaceAttrib>> faces;
     List<v3> verts;
     List<v3> textures;
     List<v3> vnormals;
@@ -46,7 +46,7 @@ public class Model {
                                 scale * vals[1], scale * vals[2]);
                         verts.add(v);
                     } else if (line.substring(0, 2).equals("f ")) {
-                        List<face_attr> f = new ArrayList<>();
+                        List<FaceAttrib> f = new ArrayList<>();
                         //TODO(stephen): regex for splitting the input model's faces
                         String[] vals = line.split(" +");
 
@@ -54,28 +54,28 @@ public class Model {
                             String[] tval = vals[i].split("/+");
                             int val = Integer.parseInt(tval[0]);
                             int txtrval = 0;
-                            if(hasTextures) {
+                            if (hasTextures) {
                                 txtrval = Integer.parseInt(tval[1]);
-                                txtrval -=1;
+                                txtrval -= 1;
                             }
                             int normalval = 0;
-                            if(hasNormal) {
+                            if (hasNormal) {
                                 //TODO(Stephen): Change 1 to 2 for models. it's 1 cause i'm testing the cube
                                 normalval = Integer.parseInt(tval[2]);
-                                normalval -=1;
+                                normalval -= 1;
                             }
                             val -= 1;
-                            f.add(new face_attr(val, txtrval, normalval));
+                            f.add(new FaceAttrib(val, txtrval, normalval));
                         }
                         faces.add(f);
-                    } else if(line.substring(0, 2).equals("vt")) {
+                    } else if (line.substring(0, 2).equals("vt")) {
                         float[] vals = parseLine(line);
                         v = new v3(vals[0], vals[1], vals[2]);
                         textures.add(v);
-                    } else if(line.substring(0, 2).equals("vn")) {
+                    } else if (line.substring(0, 2).equals("vn")) {
                         float[] vals = parseLine(line);
                         v = new v3(vals[0],
-                                 vals[1],  vals[2]);
+                                vals[1], vals[2]);
                         vnormals.add(v);
                     }
                 }
@@ -93,15 +93,15 @@ public class Model {
         for (int i = 0; i < val.length; i++) {
             if (Character.isDigit(val[i]) || val[i] == '-') {
                 res.append(val[i]);
-                int j = i+1;
+                int j = i + 1;
                 for (; j < val.length; j++) {
-                    if(val[j] != ' ')
+                    if (val[j] != ' ')
                         res.append(val[j]);
                     else {
                         break;
                     }
                 }
-                i=j;
+                i = j;
                 fres[c++] = Float.parseFloat(res.toString());
                 res.delete(0, res.length());
             }
@@ -118,7 +118,7 @@ public class Model {
         return textures.get(tdx);
     }
 
-    public List<face_attr> getFaces(int idx) {
+    public List<FaceAttrib> getFaces(int idx) {
         return faces.get(idx);
     }
 
@@ -133,30 +133,5 @@ public class Model {
 
     public int getNumberOfFaces() {
         return faces.size();
-    }
-
-    public static class face_attr {
-        int vertexIndx;
-        int textureIndx;
-        int normalIndx;
-        public face_attr(int vi, int ti, int ni) {
-            // NOTE(stephen): The vertexIndx is the same as the
-            // vertex normal's index;
-            vertexIndx = vi;
-            textureIndx = ti;
-            normalIndx = ni;
-        }
-
-        public int getTextureIndx() {
-            return textureIndx;
-        }
-
-        public int getVertexIndx() {
-            return vertexIndx;
-        }
-
-        public int getNormalIndx() {
-            return normalIndx;
-        }
     }
 }

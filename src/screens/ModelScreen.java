@@ -8,6 +8,7 @@ import util.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
+import quaint.FaceAttrib;
 
 public class ModelScreen extends Screen {
 
@@ -24,7 +25,7 @@ public class ModelScreen extends Screen {
 
     @Override
     public void init() {
-        light_dir = new v3(1.0f, -1.0f, 1.0f);
+        light_dir = new v3(4.0f, 7.0f, 9.0f);
 //        light_dir = new v3(0, 0.0f, -6.0f);
 //        light_dir = new v3(0, 1.0f, 1.0f);
 //        light_dir = new v3(0,0,1.0f);
@@ -47,7 +48,7 @@ public class ModelScreen extends Screen {
         // false if we said (float.min_value < -1.4)( required for z-interpolation)
         Arrays.fill(zBuffer, Integer.MIN_VALUE);
         for (int i = 0; i < model.getNumberOfFaces(); i++) {
-            List<Model.face_attr> faceList = model.getFaces(i);
+            List<FaceAttrib> faceList = model.getFaces(i);
             v3[] screen_coords = new v3[3];
             v3[] texture_coords = new v3[3];
             v3[] world_coords = new v3[3];
@@ -84,27 +85,28 @@ public class ModelScreen extends Screen {
             float intensity = v3.dot(world_normal, light_dir);
 
             // Perspective projection
+            // NOTE(stephen 07/08/2017): This is slow, cause matrix multiplication!
             screen_coords[0].setPos(Matrix3x3.doMultiply(screen_coords[0].homogenousRep(), false));
             screen_coords[1].setPos(Matrix3x3.doMultiply(screen_coords[1].homogenousRep(), false));
             screen_coords[2].setPos(Matrix3x3.doMultiply(screen_coords[2].homogenousRep(), false));
 
 
             // draw the rendering as a solid object
-//            if (intensity > 0)
-//                Plotter.baryTriangle(bitmap, screen_coords, texture_coords, vn_intensity,
-//                        textureData, intensity, zBuffer);
+//            if (intensity >= 0)
+                Plotter.baryTriangle(bitmap, screen_coords, texture_coords, vn_intensity,
+                        textureData, intensity, zBuffer);
 
 
             // wireframe rendering
-//            if (intensity > 0) {
-                for (int q = 0; q < screen_coords.length; q++) {
-                    int x1 = (int) screen_coords[q].x;
-                    int y1 = (int) screen_coords[q].y;
-                    int x2 = (int) screen_coords[(q + 1) % 3].x;
-                    int y2 = (int) screen_coords[(q + 1) % 3].y;
-
-                    Plotter.drawLine(bitmap, x1, y1, x2, y2, 0xffffff);
-                }
+//          if (intensity > 0) {
+//                for (int q = 0; q < screen_coords.length; q++) {
+//                    int x1 = (int) screen_coords[q].x;
+//                    int y1 = (int) screen_coords[q].y;
+//                    int x2 = (int) screen_coords[(q + 1) % 3].x;
+//                    int y2 = (int) screen_coords[(q + 1) % 3].y;
+//
+//                    Plotter.drawLine(bitmap, x1, y1, x2, y2, 0xffffff);
+//                }
 //            }
         }
     }

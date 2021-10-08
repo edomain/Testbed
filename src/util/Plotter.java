@@ -182,8 +182,8 @@ public class Plotter {
                         if (_intensity < 0)
                             _intensity = 0;
                         // texture mapping color
-                        int color_result = Color.color(_intensity, _intensity, _intensity);
-//                        int color_result = Color.decomposeAndInterpolate(ind, _intensity);
+//                        int color_result = Color.color(_intensity, _intensity, _intensity);
+                        int color_result = Color.decomposeAndInterpolate(ind, _intensity);
                         bitmap.setPixel(x, y, color_result);
                     }
                 }
